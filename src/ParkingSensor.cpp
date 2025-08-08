@@ -62,16 +62,39 @@ uint8_t ParkingSensor::getRaw(uint8_t sensorIndex) const
 {
     if (sensorIndex > 3)
         return 0;
-    return lastSensorValues[sensorIndex];
+
+    // Map user index to internal raw data index
+    static const uint8_t indexMap[4] = {0, 1, 3, 2};
+
+    return lastSensorValues[indexMap[sensorIndex]];
 }
 
 float ParkingSensor::getDistance(uint8_t sensorIndex) const
 {
-    // Example conversion: raw value 0 = 0m, 255 = 3m (adjust for your sensor)
     if (sensorIndex > 3)
         return 0.0f;
-    float meters = (lastSensorValues[sensorIndex] / 255.0f) * 3.0f;
-    return meters;
+
+    // Map user index to internal raw data index
+    static const uint8_t indexMap[4] = {0, 1, 3, 2}; // A,B,D,C -> user A,B,C,D
+
+    uint8_t rawVal = lastSensorValues[indexMap[sensorIndex]];
+
+    // Handle out-of-range or no detection
+    if (rawVal < 235)
+    {
+        // Below 235 means >2 meters (out of range), report NaN
+        return NAN;
+    }
+
+    // Interpolate between 235 (1.5m) and 255 (0m)
+    // distance = 1.5 - ((rawVal - 235) * 0.1)
+    float dist = 2.0f - (float)(rawVal - 235) * 0.1f;
+
+    // Clamp to 0 min
+    if (dist < 0)
+        dist = 0.0f;
+
+    return dist;
 }
 
 void ParkingSensor::setThreshold(unsigned int thresholdMicros)
