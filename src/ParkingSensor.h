@@ -28,7 +28,7 @@ public:
     void setThreshold(unsigned int thresholdMicros);
 
 private:
-    static void ISR();
+    static void handleInterrupt();
 
     enum State
     {
@@ -49,7 +49,7 @@ private:
     static uint8_t inputPin;
     static unsigned int threshold;
 
-    static uint8_t sensorValues[4];
+    static volatile uint8_t sensorValues[4];
 
     // For thread-safe copying
     uint8_t lastSensorValues[4];

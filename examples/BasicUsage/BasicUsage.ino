@@ -1,6 +1,7 @@
 #include "ParkingSensor.h"
 
 ParkingSensor ps;
+const char sensors[] = {'A', 'B', 'C', 'D'};
 
 void setup()
 {
@@ -16,12 +17,12 @@ void loop()
     {
         for (uint8_t i = 0; i < 4; i++)
         {
-            Serial.print("Sensor ");
-            Serial.print(i);
+            Serial.print(sensors[i]);
             Serial.print(": raw=");
             Serial.print(ps.getRaw(i));
             Serial.print(", dist(m)=");
-            Serial.println(ps.getDistance(i), 3);
+            Serial.print(ps.getDistance(i), 3);
+            Serial.print(" |");
         }
         Serial.println();
     }

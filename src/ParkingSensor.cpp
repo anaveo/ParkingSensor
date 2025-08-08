@@ -1,5 +1,6 @@
 // ParkingSensor.cpp
 #include "ParkingSensor.h"
+#include "limits.h"
 
 uint8_t ParkingSensor::inputPin = 2;         // default pin
 unsigned int ParkingSensor::threshold = 130; // default threshold (µs)
@@ -29,7 +30,7 @@ void ParkingSensor::begin(uint8_t pin)
 
 void ParkingSensor::attachISR()
 {
-    attachInterrupt(digitalPinToInterrupt(inputPin), ISR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(inputPin), handleInterrupt, CHANGE);
 }
 
 void ParkingSensor::detachISR()
@@ -61,39 +62,16 @@ uint8_t ParkingSensor::getRaw(uint8_t sensorIndex) const
 {
     if (sensorIndex > 3)
         return 0;
-
-    // Map user index to internal raw data index
-    static const uint8_t indexMap[4] = {0, 3, 2, 1};
-
-    return lastSensorValues[indexMap[sensorIndex]];
+    return lastSensorValues[sensorIndex];
 }
 
 float ParkingSensor::getDistance(uint8_t sensorIndex) const
 {
+    // Example conversion: raw value 0 = 0m, 255 = 3m (adjust for your sensor)
     if (sensorIndex > 3)
         return 0.0f;
-
-    // Map user index to internal raw data index
-    static const uint8_t indexMap[4] = {0, 3, 2, 1}; // A,D,C,B -> user A,B,C,D
-
-    uint8_t rawVal = lastSensorValues[indexMap[sensorIndex]];
-
-    // Handle out-of-range or no detection
-    if (rawVal < 235)
-    {
-        // Below 235 means >2 meters (out of range), report 0
-        return 0.0f;
-    }
-
-    // Interpolate between 235 (1.5m) and 255 (0m)
-    // distance = 1.5 - ((rawVal - 235) * 0.1)
-    float dist = 2.0f - (float)(rawVal - 235) * 0.1f;
-
-    // Clamp to 0 min
-    if (dist < 0)
-        dist = 0.0f;
-
-    return dist;
+    float meters = (lastSensorValues[sensorIndex] / 255.0f) * 3.0f;
+    return meters;
 }
 
 void ParkingSensor::setThreshold(unsigned int thresholdMicros)
@@ -102,7 +80,7 @@ void ParkingSensor::setThreshold(unsigned int thresholdMicros)
 }
 
 // Static ISR method
-void ParkingSensor::ISR()
+void ParkingSensor::handleInterrupt()
 {
     bool level = digitalRead(inputPin);
     unsigned long now = micros();

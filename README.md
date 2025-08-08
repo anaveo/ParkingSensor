@@ -57,5 +57,5 @@ void loop() {
 - void update() — Call frequently to process incoming signals
 - bool available() — Check if new sensor data is available
 - uint8_t getRaw(uint8_t sensorIndex) — Get raw 8-bit value for sensor 0–3
-- float getDistance(uint8_t sensorIndex) — Get distance in meters 
+- float getDistance(uint8_t sensorIndex) — Get distance in meters, NaN if out of range
 - void setThreshold(unsigned int microseconds) — Set pulse length threshold for bit decoding
