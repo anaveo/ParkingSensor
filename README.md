@@ -4,12 +4,20 @@ Interrupt-driven Arduino library to decode 4 sensor readings from a proprietary 
 
 ## Important Notes
 
+- **Supported sensors**
+  This library was built around reverse engineering the proprietary protocol in a cheap Chinese parking sensor kit. 
+  
+  ![<img src="image.png" width="100"/>](/Parking_Sensor.jpg)
+
+  The kit has no brand markings or numbers so it is not possible to see if the sensor you have will work with this library without trying it out or looking at the signal using a scope. Nevertheless, if you have a kit that looks like this, this library might do the job! If not, please let me know, I would love to upgrade this library to handle multiple sensor types.
 - **Distance measurement scale:**  
   The sensors use a non-linear scale where higher raw values mean *shorter* distances:  
-  - Raw value `240` ≈ 1.5 meters  
-  - Raw value `241` ≈ 1.4 meters  
+  - Raw value `235` ≈ 2.0 meters  
+  - Raw value `236` ≈ 1.9 meters  
   - ...  
-  - Raw value `255` ≈ 0 meters (closest)  
+  - Raw value `255` ≈ 0 meters (closest)
+  
+  The sensors have a range of 2 meters, so while the datastream supports 8 bits for each sensor, they never use more than 5 bits (strange!).
 
 ## Features
 
