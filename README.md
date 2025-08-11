@@ -6,8 +6,8 @@ Interrupt-driven Arduino library to decode 4 sensor readings from a proprietary 
 
 - **Supported sensors**
   This library was built around reverse engineering the proprietary protocol in a cheap Chinese parking sensor kit. 
-  
-  ![<img src="image.png" width="100"/>](/Parking_Sensor.jpg)
+
+  ![Sensor](/Parking_Sensor.jpg)
 
   The kit has no brand markings or numbers so it is not possible to see if the sensor you have will work with this library without trying it out or looking at the signal using a scope. Nevertheless, if you have a kit that looks like this, this library might do the job! If not, please let me know, I would love to upgrade this library to handle multiple sensor types.
 - **Distance measurement scale:**  
